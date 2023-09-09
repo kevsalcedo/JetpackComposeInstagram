@@ -10,8 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.ketchup.jetpackcomposeinstagram.login.LoginScreen
-import com.ketchup.jetpackcomposeinstagram.login.LoginViewModel
+import com.ketchup.jetpackcomposeinstagram.login.ui.LoginScreen
+import com.ketchup.jetpackcomposeinstagram.login.ui.LoginViewModel
 import com.ketchup.jetpackcomposeinstagram.ui.theme.JetpackComposeInstagramTheme
 
 class MainActivity : ComponentActivity() {
