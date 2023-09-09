@@ -1,4 +1,4 @@
-package com.ketchup.jetpackcomposeinstagram
+package com.ketchup.jetpackcomposeinstagram.login
 
 import android.app.Activity
 import android.util.Patterns
@@ -30,6 +30,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -45,25 +46,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ketchup.jetpackcomposeinstagram.R
 import com.ketchup.jetpackcomposeinstagram.ui.theme.JetpackComposeInstagramTheme
 
-@Preview(showBackground = true)
 @Composable
-fun LoginPreview() {
-    JetpackComposeInstagramTheme {
-        LoginScreen()
-    }
-}
-
-@Composable
-fun LoginScreen() {
+fun LoginScreen(loginViewModel: LoginViewModel) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
         Header(Modifier.align(Alignment.TopEnd))
-        Body(Modifier.align(Alignment.Center))
+        Body(Modifier.align(Alignment.Center), loginViewModel)
         Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -99,29 +93,25 @@ fun SignUp() {
 }
 
 @Composable
-fun Body(modifier: Modifier) {
+fun Body(modifier: Modifier, loginViewModel: LoginViewModel) {
 
-    var email by rememberSaveable {
-        mutableStateOf("")
-    }
-    var password by rememberSaveable {
-        mutableStateOf("")
-    }
-    var isLoginEnable by rememberSaveable {
-        mutableStateOf(false)
-    }
+    val email: String by loginViewModel.email.observeAsState(initial = "")
+    val password: String by loginViewModel.password.observeAsState(initial = "")
+    val isLoginEnable by loginViewModel.isLoginEnable.observeAsState(initial = false)
 
     Column(modifier = modifier) {
         ImageLogo(Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.size(16.dp))
         Email(email) {
-            email = it
-            isLoginEnable = enableLogin(email, password)
+            //email = it //Removed for mvvm
+            //isLoginEnable = enableLogin(email, password) //Removed for mvvm
+            loginViewModel.onLoginChanged(email = it, password = password)
         }
         Spacer(Modifier.size(4.dp))
         Password(password) {
-            password = it
-            isLoginEnable = enableLogin(email, password)
+            //password = it                                 //Removed for mvvm
+            //isLoginEnable = enableLogin(email, password)  //Removed for mvvm
+            loginViewModel.onLoginChanged(email = email, password = it)
         }
         Spacer(Modifier.size(8.dp))
         ForgotPassword(Modifier.align(Alignment.End))
@@ -195,10 +185,6 @@ fun LoginButton(loginEnable: Boolean) {
     ) {
         Text(text = "Log In")
     }
-}
-
-fun enableLogin(email: String, password: String): Boolean {
-    return Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 7
 }
 
 @Composable
